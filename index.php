@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$is_login = isset($_SESSION['is_login']) && $_SESSION['is_login'] === true;
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -54,6 +60,38 @@
       z-index: 999;
       pointer-events: none;
       opacity: 0.5;
+    }
+
+    /* NAV / TOP BAR (TOMBOL LOGIN KANAN ATAS) */
+    .top-nav {
+      max-width: 950px;
+      margin: 0 auto 16px auto;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .login-nav-btn {
+      display: inline-block;
+      background: var(--punk-magenta);
+      color: #fff;
+      padding: 8px 18px;
+      border: 3px solid #fff;
+      font-weight: 900;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: 4px 4px 0px var(--punk-yellow);
+      transform: rotate(1.5deg);
+      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      z-index: 100;
+    }
+
+    .login-nav-btn:hover {
+      background: var(--punk-yellow);
+      color: #000;
+      border-color: #000;
+      transform: translateY(-2px) rotate(-1deg);
+      box-shadow: 6px 6px 0px var(--punk-purple);
     }
 
     .container {
@@ -445,6 +483,15 @@
 </head>
 <body>
 
+  <!-- TOMBOL LOGIN / DASHBOARD DI KANAN ATAS -->
+  <nav class="top-nav">
+    <?php if ($is_login): ?>
+      <a href="dashboard.php" class="login-nav-btn marker-font">⚡ DASHBOARD (<?php echo htmlspecialchars($_SESSION['username']); ?>)</a>
+    <?php else: ?>
+      <a href="login.php" class="login-nav-btn marker-font">🔑 LOGIN ➔</a>
+    <?php endif; ?>
+  </nav>
+
   <div class="container">
     
     <!-- HERO SECTION -->
@@ -452,7 +499,7 @@
       <div class="tape tape-top-left"></div>
       <span class="sticker-tag sticker-1">100% PUNK ⚡</span>
       <div class="avatar-wrapper">
-        <img src="kuncup.jpg" alt="Foto Profil" class="avatar-img" id="avatarImg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=yousuf'">
+        <img src="Kuncup.jpg" alt="Foto Profil" class="avatar-img" id="avatarImg" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=yousuf'">
         <span class="status-badge">ONLINE</span>
       </div>
       <div class="profile-info">

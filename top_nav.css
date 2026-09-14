@@ -1,0 +1,30 @@
+.top-nav {
+  max-width: 950px;
+  margin: 0 auto 16px auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login-nav-btn {
+  display: inline-block;
+  background: var(--punk-magenta);
+  color: #fff;
+  padding: 8px 18px;
+  border: 3px solid #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 4px 4px 0px var(--punk-yellow);
+  transform: rotate(1.5deg);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  z-index: 100;
+}
+
+.login-nav-btn:hover {
+  background: var(--punk-yellow);
+  color: #000;
+  border-color: #000;
+  transform: translateY(-2px) rotate(-1deg);
+  box-shadow: 6px 6px 0px var(--punk-purple);
+}

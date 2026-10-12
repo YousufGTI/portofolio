@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Batu Gunting Kertas Modern</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .choice-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .choice-card:hover {
+      transform: translateY(-6px);
+    }
+    .choice-card:active {
+      transform: scale(0.96);
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .animate-pop {
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4 sm:p-6">
+
+  <div class="max-w-xl w-full bg-slate-800/80 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-slate-700/60 shadow-2xl">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <span class="inline-block px-3 py-1 bg-indigo-500/10 text-indigo-400 text-xs font-semibold rounded-full uppercase tracking-wider mb-2 border border-indigo-500/20">
+        Mini Game
+      </span>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Batu • Gunting • Kertas</h1>
+      <p class="text-slate-400 text-sm mt-1">Uji keberuntunganmu melawan komputer!</p>
+    </div>
+
+    <!-- Scoreboard -->
+    <div class="grid grid-cols-3 gap-3 bg-slate-900/60 p-4 rounded-2xl border border-slate-700/40 mb-8 text-center">
+      <div class="flex flex-col">
+        <span class="text-xs text-slate-400 font-medium mb-1">Kamu</span>
+        <span id="player-score" class="text-2xl sm:text-3xl font-extrabold text-emerald-400">0</span>
+      </div>
+      <div class="flex flex-col border-x border-slate-800">
+        <span class="text-xs text-slate-400 font-medium mb-1">Seri</span>
+        <span id="draw-score" class="text-2xl sm:text-3xl font-extrabold text-amber-400">0</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-xs text-slate-400 font-medium mb-1">Komputer</span>
+        <span id="computer-score" class="text-2xl sm:text-3xl font-extrabold text-rose-400">0</span>
+      </div>
+    </div>
+
+    <!-- Match Display Area -->
+    <div class="bg-slate-900/40 rounded-2xl p-6 border border-slate-700/30 mb-8 min-h-[160px] flex flex-col justify-center items-center relative overflow-hidden">
+      
+      <!-- Placeholder Status -->
+      <div id="placeholder-text" class="text-slate-500 text-sm text-center">
+        Pilih salah satu opsi di bawah untuk memulai permainan
+      </div>
+
+      <!-- Result Arena (Hidden initially) -->
+      <div id="battle-arena" class="hidden w-full flex-col items-center">
+        <div class="flex justify-between items-center w-full max-w-xs mb-4">
+          <!-- Player Pick -->
+          <div class="flex flex-col items-center">
+            <div id="player-pick-icon" class="text-5xl sm:text-6xl mb-2 animate-pop">❓</div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Kamu</span>
+          </div>
+
+          <div class="text-slate-600 font-black text-xl italic">VS</div>
+
+          <!-- Computer Pick -->
+          <div class="flex flex-col items-center">
+            <div id="computer-pick-icon" class="text-5xl sm:text-6xl mb-2 animate-pop">❓</div>
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Komputer</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Message Badge -->
+        <div id="result-badge" class="px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide border transition-all duration-300">
+          -
+        </div>
+      </div>
+    </div>
+
+    <!-- Player Selection Buttons -->
+    <div class="grid grid-cols-3 gap-3 mb-6">
+      <button onclick="play('batu')" class="choice-card bg-slate-700/40 hover:bg-slate-700/80 border border-slate-600/50 hover:border-indigo-500/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group">
+        <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">🪨</span>
+        <span class="text-xs sm:text-sm font-semibold text-slate-200">Batu</span>
+      </button>
+
+      <button onclick="play('gunting')" class="choice-card bg-slate-700/40 hover:bg-slate-700/80 border border-slate-600/50 hover:border-indigo-500/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group">
+        <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">✂️</span>
+        <span class="text-xs sm:text-sm font-semibold text-slate-200">Gunting</span>
+      </button>
+
+      <button onclick="play('kertas')" class="choice-card bg-slate-700/40 hover:bg-slate-700/80 border border-slate-600/50 hover:border-indigo-500/50 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 group">
+        <span class="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">📄</span>
+        <span class="text-xs sm:text-sm font-semibold text-slate-200">Kertas</span>
+      </button>
+    </div>
+
+    <!-- Reset Button -->
+    <div class="flex justify-center">
+      <button onclick="resetGame()" class="text-xs font-medium text-slate-400 hover:text-slate-200 flex items-center gap-1.5 py-1 px-3 rounded-lg hover:bg-slate-700/30 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Reset Skor
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    // Dictionary pilihan dan emoji
+    const choicesData = {
+      batu: { emoji: '🪨', label: 'Batu' },
+      gunting: { emoji: '✂️', label: 'Gunting' },
+      kertas: { emoji: '📄', label: 'Kertas' }
+    };
+
+    // State Skor
+    let scores = {
+      player: 0,
+      draw: 0,
+      computer: 0
+    };
+
+    function play(userChoice) {
+      const choices = ['batu', 'gunting', 'kertas'];
+      const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+      // Sembunyikan placeholder, tampilkan arena bertanding
+      document.getElementById('placeholder-text').classList.add('hidden');
+      const arena = document.getElementById('battle-arena');
+      arena.classList.remove('hidden');
+      arena.classList.add('flex');
+
+      // Update Pilihan Visual
+      const playerIcon = document.getElementById('player-pick-icon');
+      const computerIcon = document.getElementById('computer-pick-icon');
+      
+      // Reset animasi sederhana
+      playerIcon.classList.remove('animate-pop');
+      computerIcon.classList.remove('animate-pop');
+      void playerIcon.offsetWidth; // Trigger reflow
+      playerIcon.classList.add('animate-pop');
+      computerIcon.classList.add('animate-pop');
+
+      playerIcon.innerText = choicesData[userChoice].emoji;
+      computerIcon.innerText = choicesData[computerChoice].emoji;
+
+      const resultBadge = document.getElementById('result-badge');
+
+      // Logika Pemenang & Styling Badge
+      if (userChoice === computerChoice) {
+        scores.draw++;
+        resultBadge.innerText = 'SERI! Sama-sama memilih ' + choicesData[userChoice].label;
+        resultBadge.className = 'px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide border bg-amber-500/10 text-amber-400 border-amber-500/30 animate-pop';
+      } else if (
+        (userChoice === 'batu' && computerChoice === 'gunting') ||
+        (userChoice === 'gunting' && computerChoice === 'kertas') ||
+        (userChoice === 'kertas' && computerChoice === 'batu')
+      ) {
+        scores.player++;
+        resultBadge.innerText = 'KAMU MENANG! ' + choicesData[userChoice].label + ' mengalahkan ' + choicesData[computerChoice].label;
+        resultBadge.className = 'px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide border bg-emerald-500/10 text-emerald-400 border-emerald-500/30 animate-pop';
+      } else {
+        scores.computer++;
+        resultBadge.innerText = 'KAMU KALAH! ' + choicesData[computerChoice].label + ' mengalahkan ' + choicesData[userChoice].label;
+        resultBadge.className = 'px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold tracking-wide border bg-rose-500/10 text-rose-400 border-rose-500/30 animate-pop';
+      }
+
+      // Update Tampilan Skor
+      document.getElementById('player-score').innerText = scores.player;
+      document.getElementById('draw-score').innerText = scores.draw;
+      document.getElementById('computer-score').innerText = scores.computer;
+    }
+
+    function resetGame() {
+      scores = { player: 0, draw: 0, computer: 0 };
+      document.getElementById('player-score').innerText = 0;
+      document.getElementById('draw-score').innerText = 0;
+      document.getElementById('computer-score').innerText = 0;
+
+      // Reset ke tampilan awal
+      document.getElementById('battle-arena').classList.add('hidden');
+      document.getElementById('battle-arena').classList.remove('flex');
+      document.getElementById('placeholder-text').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
